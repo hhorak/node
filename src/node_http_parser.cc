@@ -860,7 +860,11 @@ class Parser : public AsyncWrap, public StreamListener {
   void Init(llhttp_type_t type, uint64_t max_http_header_size,
             bool lenient, uint64_t headers_timeout) {
     llhttp_init(&parser_, type, &settings);
-    llhttp_set_lenient(&parser_, lenient);
+    if (lenient) {
+      llhttp_set_lenient_headers(&parser_, 1);
+      llhttp_set_lenient_chunked_length(&parser_, 1);
+      llhttp_set_lenient_keep_alive(&parser_, 1);
+    }
     header_nread_ = 0;
     url_.Reset();
     status_message_.Reset();
